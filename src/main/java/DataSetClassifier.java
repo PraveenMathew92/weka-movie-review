@@ -21,6 +21,7 @@ public class DataSetClassifier {
         filter.setAttributeIndices("last");
 
         FilteredClassifier filteredClassifier = new FilteredClassifier();
+        filteredClassifier.setClassifier(classifier);
         filteredClassifier.setFilter(filter);
 
         filteredClassifier.buildClassifier(instances);
