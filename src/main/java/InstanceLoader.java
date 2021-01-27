@@ -1,14 +1,15 @@
-import weka.core.Attribute;
-import weka.core.Instance;
-import weka.core.Instances;
+import weka.core.*;
 import weka.core.converters.CSVLoader;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Objects;
+
+import static java.util.Arrays.asList;
 
 public class InstanceLoader {
-    private String positiveReviewsLocation = "";
-    private String negativeReviewsLocation = "";
+    private static String positiveReviewsLocation = "./archive/movie_reviews/movie_reviews/pos";
+    private static String negativeReviewsLocation = "./archive/movie_reviews/movie_reviews/neg";
     private static String csvFileLocation = "./archive/movie_review.csv";
 
     public static Instances getInstances() throws IOException {
@@ -27,5 +28,36 @@ public class InstanceLoader {
         for(int i = 0; i<10; i++) {
             System.out.println("Number of attributes = " + instances.get(i).numAttributes());
         }
+    }
+
+    public static Instances readInstances(long limit) throws IOException {
+        File positiveReviewsDirectory = new File(positiveReviewsLocation);
+        File negativeReviewsDirectory = new File(negativeReviewsLocation);
+
+        Attribute textAttribute = new Attribute("text", (String)null, null);
+        Attribute labelAttribute = new Attribute("label", asList("pos", "neg"));
+
+
+        ArrayList<Attribute> attributes = new ArrayList<>(asList(textAttribute, labelAttribute));
+        Instances instances = new Instances("instances", attributes, 0);
+
+        for(File positiveFile: Objects.requireNonNull(positiveReviewsDirectory.listFiles())) {
+            String review = new BufferedReader(new FileReader(positiveFile)).readLine();
+            DenseInstance instance = new DenseInstance(2 );
+            instance.setValue(textAttribute, review);
+            instance.setValue(labelAttribute, "pos");
+            instances.add(instance);
+        }
+
+        for(File negativeFile: Objects.requireNonNull(negativeReviewsDirectory.listFiles())) {
+            String review = new BufferedReader(new FileReader(negativeFile)).readLine();
+            DenseInstance instance = new DenseInstance(2 );
+            instance.setValue(textAttribute, review);
+            instance.setValue(labelAttribute, "neg");
+            instances.add(instance);
+        }
+
+        instances.setClassIndex(instances.numAttributes() - 1);
+        return instances;
     }
 }
