@@ -3,6 +3,7 @@ import weka.core.converters.CSVLoader;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static java.util.Arrays.asList;
@@ -34,7 +35,7 @@ public class InstanceLoader {
         File positiveReviewsDirectory = new File(positiveReviewsLocation);
         File negativeReviewsDirectory = new File(negativeReviewsLocation);
 
-        Attribute textAttribute = new Attribute("text", (String)null, null);
+        Attribute textAttribute = new Attribute("text", (List<String>) null);
         Attribute labelAttribute = new Attribute("label", asList("pos", "neg"));
 
 
@@ -43,8 +44,8 @@ public class InstanceLoader {
 
         for(File positiveFile: Objects.requireNonNull(positiveReviewsDirectory.listFiles())) {
             String review = new BufferedReader(new FileReader(positiveFile)).readLine();
+            System.out.println(review);
             DenseInstance instance = new DenseInstance(2 );
-            instance.setValue(textAttribute, review);
             instance.setValue(labelAttribute, "pos");
             instances.add(instance);
         }

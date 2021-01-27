@@ -30,6 +30,6 @@ public class DataSetClassifier {
         evaluation.evaluateModel(classifier, instances);
         String classifierName = classifier.getClass().getSimpleName();
         evaluation.crossValidateModel(classifier, instances, foldsNumber, new Random());
-        evaluation.toSummaryString(classifierName, true);
+        System.out.println(evaluation.toSummaryString(classifierName, true));
     }
 }
