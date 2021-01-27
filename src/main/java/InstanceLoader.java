@@ -44,8 +44,8 @@ public class InstanceLoader {
 
         for(File positiveFile: Objects.requireNonNull(positiveReviewsDirectory.listFiles())) {
             String review = new BufferedReader(new FileReader(positiveFile)).readLine();
-            System.out.println(review);
             DenseInstance instance = new DenseInstance(2 );
+            instance.setValue(textAttribute, review);
             instance.setValue(labelAttribute, "pos");
             instances.add(instance);
         }
