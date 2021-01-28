@@ -1,9 +1,11 @@
 // https://stanfordnlp.github.io/CoreNLP/ner.html
 
 
+import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.*;
 
 import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class NERPipelineDemo {
@@ -50,6 +52,12 @@ public class NERPipelineDemo {
             System.out.println("\tdetected entity: \t"+em.text()+"\t"+em.entityType());
         System.out.println("---");
         System.out.println("tokens and ner tags");
+
+        Set<String> ners = doc.tokens()
+                .stream()
+                .map(CoreLabel::ner)
+                .collect(Collectors.toSet());
+        System.out.println("NERS: " + ners.toString());
 
         String tokensAndNERTags = doc.tokens().stream().map(token -> "("+token.word()+","+token.ner()+")").collect(
                 Collectors.joining(" "));
