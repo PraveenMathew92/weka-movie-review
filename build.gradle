@@ -13,5 +13,7 @@ repositories {
 
 dependencies {
     implementation group: 'nz.ac.waikato.cms.weka', name: 'weka-stable', version: '3.8.0'
+    implementation 'edu.stanford.nlp:stanford-corenlp:4.2.0'
+    implementation 'edu.stanford.nlp:stanford-corenlp:4.2.0:models'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
