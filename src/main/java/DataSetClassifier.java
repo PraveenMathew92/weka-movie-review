@@ -3,12 +3,17 @@ import weka.classifiers.Evaluation;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.stemmers.IteratedLovinsStemmer;
 import weka.core.stemmers.LovinsStemmer;
 import weka.core.stemmers.SnowballStemmer;
 import weka.core.stopwords.Rainbow;
 import weka.core.stopwords.StopwordsHandler;
+import weka.core.tokenizers.*;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.StringToNominal;
 import weka.filters.unsupervised.attribute.StringToWordVector;
 
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Random;
 
@@ -17,30 +22,27 @@ public class DataSetClassifier {
         int foldsNumber = 10;
 
         StringToWordVector filter = new StringToWordVector();
-        filter.setInputFormat(instances);
-        filter.setStopwordsHandler(new Rainbow());
-        filter.setStemmer(new LovinsStemmer());
-        filter.setLowerCaseTokens(true);
-        filter.setAttributeIndices("last");
 
         FilteredClassifier filteredClassifier = new FilteredClassifier();
-        filteredClassifier.setClassifier(classifier);
         filteredClassifier.setFilter(filter);
+        filteredClassifier.setClassifier(classifier);
 
         filteredClassifier.buildClassifier(instances);
 
-        Evaluation evaluation = new Evaluation(instances);
-        evaluation.evaluateModel(classifier, instances);
-        String classifierName = classifier.getClass().getSimpleName();
-        evaluation.crossValidateModel(classifier, instances, foldsNumber, new Random());
+        Evaluation evaluation = new Evaluation(Filter.useFilter(instances, filter));
+        evaluation.evaluateModel(filteredClassifier, Filter.useFilter(instances, filter));
+        String classifierName = filteredClassifier.getClass().getSimpleName();
+        evaluation.crossValidateModel(filteredClassifier, instances, foldsNumber, new Random());
         System.out.println(evaluation.toSummaryString(classifierName, true));
 
         Enumeration<Instance> enumeratedInstances = instances.enumerateInstances();
 
+        Instances filteredInstances = Filter.useFilter(instances, filter);
         while(enumeratedInstances.hasMoreElements()) {
             Instance instance = enumeratedInstances.nextElement();
+            System.out.println();
             System.out.println(instance.toString());
-            System.out.println(instances.classAttribute().value((int) filteredClassifier.classifyInstance(instance)));
+            System.out.println(Arrays.toString(filteredClassifier.distributionForInstance(instance)));
         }
 
         System.out.println(evaluation.toMatrixString("CONFUSION MATRIX"));
