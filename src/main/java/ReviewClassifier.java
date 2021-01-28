@@ -3,6 +3,7 @@ import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.bayes.NaiveBayesMultinomial;
 import weka.classifiers.bayes.NaiveBayesMultinomialText;
 import weka.classifiers.functions.LinearRegression;
+import weka.classifiers.functions.Logistic;
 import weka.classifiers.functions.SMOreg;
 import weka.classifiers.trees.J48;
 import weka.core.Instances;
@@ -16,7 +17,8 @@ public class ReviewClassifier {
         Classifier naiveBayesMultinomialText = new NaiveBayesMultinomialText();
         Classifier j48 = new J48();
         Classifier linearRegression = new LinearRegression();
+        Classifier logisticRegression = new Logistic();
         Classifier smo = new SMOreg();
-        DataSetClassifier.classify(j48, instances);
+        DataSetClassifier.classify(logisticRegression, instances);
     }
 }

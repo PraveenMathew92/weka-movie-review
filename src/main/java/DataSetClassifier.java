@@ -3,14 +3,9 @@ import weka.classifiers.Evaluation;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.stemmers.IteratedLovinsStemmer;
 import weka.core.stemmers.LovinsStemmer;
-import weka.core.stemmers.SnowballStemmer;
 import weka.core.stopwords.Rainbow;
-import weka.core.stopwords.StopwordsHandler;
-import weka.core.tokenizers.*;
 import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.StringToNominal;
 import weka.filters.unsupervised.attribute.StringToWordVector;
 
 import java.util.Arrays;
@@ -22,6 +17,11 @@ public class DataSetClassifier {
         int foldsNumber = 10;
 
         StringToWordVector filter = new StringToWordVector();
+        filter.setInputFormat(instances);
+        filter.setStopwordsHandler(new Rainbow());
+        filter.setStemmer(new LovinsStemmer());
+        filter.setLowerCaseTokens(true);
+        filter.setAttributeIndices("last");
 
         FilteredClassifier filteredClassifier = new FilteredClassifier();
         filteredClassifier.setFilter(filter);
@@ -42,6 +42,7 @@ public class DataSetClassifier {
             Instance instance = enumeratedInstances.nextElement();
             System.out.println();
             System.out.println(instance.toString());
+            System.out.println(filteredClassifier.classifyInstance(instance));
             System.out.println(Arrays.toString(filteredClassifier.distributionForInstance(instance)));
         }
 
